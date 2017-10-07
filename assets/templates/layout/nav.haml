@@ -6,7 +6,12 @@
   .nav-links
     .nav-link 
       %a(href="#") New Replay
-    .nav-link
-      %a(href="{% url 'user:signup' %}") Sign up
-    .nav-link
-      %a(href="{% url 'user:login' %}") Login
+
+    - if request.user.is_authenticated
+      .nav-link
+        %a(href="{% url 'user:logout' %}") Logout
+    - else
+      .nav-link
+        %a(href="{% url 'user:signup' %}") Sign up
+      .nav-link
+        %a(href="{% url 'user:login' %}") Login
