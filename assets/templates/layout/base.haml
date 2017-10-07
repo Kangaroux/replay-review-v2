@@ -1,0 +1,15 @@
+!!!
+%html(lang="en")
+  %head
+    %title
+      - block title
+        &lt;sitename&gt;
+
+    %link(rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css")
+    - block head
+
+  %body(class="{% block body-class %}{% endblock %}")
+    - block nav
+      - include "layout/nav.html"
+    - block body
+    - block js

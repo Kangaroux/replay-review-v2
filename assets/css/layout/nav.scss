@@ -1,0 +1,45 @@
+.nav {
+  height: 80px;
+  background-color: #EAEAEA;
+}
+
+.nav-banner {
+  height: 100%;
+  float: left;
+
+  span {
+    display: block;
+    font-size: 24px;
+    padding: 20px;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.nav-links {
+  float: right;
+  height: 100%;
+  margin-right: 20px;
+  font-size: 16px;
+}
+
+.nav-link {
+  display: inline-block;
+  height: 100%;
+  margin-left: 20px;
+
+  a {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+
+    display: block;
+    padding: 12px 20px;
+
+    &:hover {
+      background-color: #E1E1E1;
+      text-decoration: none;
+    }
+  }
+}

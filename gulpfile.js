@@ -7,7 +7,7 @@ const riot = require("gulp-riot");
 const concat = require("gulp-concat");
 
 // For template compilation
-const {spawn} = require("child_process");
+const {spawn, execFileSync} = require("child_process");
 
 const CSS_FILES = "./assets/css/**/*.scss";
 const JS_FILES = "./assets/js/**/*.js";
@@ -46,7 +46,7 @@ gulp.task("riotjs", function() {
 });
 
 gulp.task("templates", function() {
-  spawn("hamplify", ["assets/templates", "build/templates"]);
+  execFileSync("hamplify", ["assets/templates", "build/templates"]);
 });
 
 gulp.task("watch", function() {
