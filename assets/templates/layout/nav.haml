@@ -1,11 +1,12 @@
 .nav
   .nav-banner
-    %span Replay Review
+    %span 
+      %a(href="{% url 'user:home' %}") Replay Review
 
   .nav-links
     .nav-link 
       %a(href="#") New Replay
     .nav-link
-      %a(href="#") Sign up
+      %a(href="{% url 'user:signup' %}") Sign up
     .nav-link
-      %a(href="#") Login
+      %a(href="{% url 'user:login' %}") Login

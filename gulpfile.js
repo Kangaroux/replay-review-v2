@@ -18,7 +18,7 @@ assets/css
 ext: .scss
 */
 gulp.task("css", function() {
-  return gulp.src(CSS_FILES)
+  return gulp.src("./assets/css/style.scss")
     .pipe(sass().on("error", sass.logError))
     .pipe(gulp.dest("./build/css"));
 });

@@ -1,0 +1,29 @@
+@mixin rounded-input {
+  padding: 12px 15px;
+  border: 1px solid #CCC;
+  border-radius: 4px;
+}
+
+.btn {
+  @include rounded-input;
+  cursor: pointer;
+}
+
+.btn-block {
+  display: block;
+  width: 100%;
+}
+
+.form {
+  input:not([type="submit"]) {
+    @include rounded-input;
+
+    display: block;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+
+  input[type="submit"] {
+    margin-top: 20px;
+  }
+}
