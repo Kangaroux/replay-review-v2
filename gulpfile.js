@@ -6,6 +6,9 @@ const babel = require("gulp-babel");
 const riot = require("gulp-riot");
 const concat = require("gulp-concat");
 
+// For template compilation
+const {spawn} = require("child_process");
+
 const CSS_FILES = "./assets/css/**/*.scss";
 const JS_FILES = "./assets/js/**/*.js";
 const RIOT_FILES = "./assets/js/riot/**/*.tag";
@@ -42,10 +45,16 @@ gulp.task("riotjs", function() {
     .pipe(gulp.dest("./build/js"));
 });
 
+gulp.task("templates", function() {
+  spawn("hamplify", ["assets/templates", "build/templates"]);
+});
+
 gulp.task("watch", function() {
   gulp.watch(CSS_FILES, ["css"]);
   gulp.watch(JS_FILES, ["js"]);
   gulp.watch(RIOT_FILES, ["riotjs"]);
+
+  spawn("hamplify", ["assets/templates", "build/templates", "--watch"]);
 });
 
-gulp.task("default", ["css", "js", "riotjs"]);
+gulp.task("default", ["css", "js", "riotjs", "templates"]);
