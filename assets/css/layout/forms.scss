@@ -14,6 +14,14 @@
   width: 100%;
 }
 
+.btn-white {
+  background-color: #FFF;
+
+  &:hover {
+    background-color: #FAFAFA;
+  }
+}
+
 .form {
   input:not([type="submit"]) {
     @include rounded-input;
@@ -26,4 +34,10 @@
   input[type="submit"] {
     margin-top: 20px;
   }
+}
+
+.field-error {
+  color: #B00;
+  margin: 5px 0px 10px;
+  padding-left: 3px;
 }

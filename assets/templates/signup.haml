@@ -10,10 +10,11 @@
 
     %form.form(method="POST")
       - csrf_token
-      
-      %input(type="text" name="username" placeholder="Username")
-      %input(type="text" name="email" placeholder="email@example.com")
-      %input(type="text" name="password" placeholder="Password")
-      %input(type="text" name="password_confirm" placeholder="Confirm password")
 
-      %input.btn.btn-block(type="submit" value="Create Account")
+      - for field in signup_form
+        {{field}}
+
+        - if field.errors
+          .field-error {{field.errors|first}}
+
+      %input.btn.btn-block.btn-white(type="submit" value="Create Account")

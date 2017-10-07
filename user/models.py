@@ -1,3 +1,14 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-# Create your models here.
+from .validators import MAX_USERNAME_LENGTH
+
+class User(AbstractUser):
+  username = models.CharField(max_length=MAX_USERNAME_LENGTH, unique=True,
+    error_messages={
+      'unique': "Username is already taken.",
+    })
+  email = models.EmailField(unique=True,
+    error_messages={
+      'unique': "Email is already in use.",
+    })
