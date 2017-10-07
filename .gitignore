@@ -3,6 +3,10 @@
 *.sqlite3
 *.sublime-*
 
+yarn.lock
+
 __pycache__/
+build/
 migrations/
+node_modules/
 venv/
