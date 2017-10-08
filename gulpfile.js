@@ -5,6 +5,7 @@ const sass = require("gulp-sass");
 const babel = require("gulp-babel");
 const riot = require("gulp-riot");
 const concat = require("gulp-concat");
+const autoprefix = require("gulp-autoprefixer");
 
 // For template compilation
 const {spawn, execFileSync} = require("child_process");
@@ -22,6 +23,10 @@ ext: .scss
 gulp.task("css", function() {
   return gulp.src("assets/css/style.scss")
     .pipe(sass().on("error", sass.logError))
+    .pipe(autoprefix({
+      browsers: [">= 5%", "last 2 versions"],
+      cascade: false
+    }))
     .pipe(gulp.dest("build/css"));
 });
 
