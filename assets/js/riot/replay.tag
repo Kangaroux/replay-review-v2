@@ -31,9 +31,6 @@
       // Create the videojs player
       this.player = videojs("player", {
         fluid: true, // width 100%
-        controlBar: {
-          remainingTimeDisplay: false
-        },
         techOrder: ["youtube"], 
         sources: [{ 
           type: "video/youtube", 
