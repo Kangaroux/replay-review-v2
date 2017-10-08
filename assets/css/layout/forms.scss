@@ -23,7 +23,8 @@
 }
 
 .form {
-  input:not([type="submit"]):not([type="checkbox"]) {
+  input:not([type="submit"]):not([type="checkbox"]),
+  textarea {
     @include rounded-input;
 
     display: block;
@@ -40,10 +41,22 @@
   input[type="submit"] {
     margin-top: 20px;
   }
+
+  textarea {
+    width: 100%;
+    resize: vertical;
+    min-height: 4rem;
+    max-height: 15rem;
+  }
 }
 
 .field-error {
   color: #B00;
   margin: 5px 0px 10px;
   padding-left: 3px;
+}
+
+.help-text {
+  padding-left: 3px;
+  font-size: 12px;
 }

@@ -2,4 +2,29 @@
 - load static
 
 - block body
-  Hi
+  .page-modal
+    %h2 New Replay
+
+    %p This replay will be available publically for everyone to see. Make sure the video 
+      is not set to private so other people can view it.
+
+    %p Record the replay from your perspective. Editing the video is not necessary. Please 
+      do not include any music.
+
+    %form.form(method="POST")
+      - csrf_token
+
+      - for field in replay_form
+        - if field.help_text
+          %p.help-text {{field.help_text|safe}}
+
+        - if field.label
+          %label
+            {{field}} {{field.label}}
+        - else
+          {{field}}
+
+        - if field.errors
+          .field-error {{field.errors|first}}
+
+      %input.btn.btn-block.btn-white(type="submit" value="Submit Replay")
