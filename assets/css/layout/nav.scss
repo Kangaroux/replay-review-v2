@@ -1,6 +1,7 @@
 .nav {
   height: 80px;
-  background-color: #EAEAEA;
+  background: #EAEAEA;
+  background: linear-gradient(darken(#EAEAEA, 4%), lighten(#EAEAEA, 4%));
 }
 
 .nav-banner {
