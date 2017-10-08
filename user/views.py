@@ -12,6 +12,9 @@ class Home(View):
 
 class Login(View):
   def get(self, request):
+    if request.user.is_authenticated:
+      return redirect(reverse("user:home"))
+
     return render(request, "login.html", {
       "login_form": LoginForm()
     })
@@ -48,6 +51,9 @@ class Logout(View):
 
 class Signup(View):
   def get(self, request):
+    if request.user.is_authenticated:
+      return redirect(reverse("user:home"))
+      
     return render(request, "signup.html", {
       "signup_form": SignupForm()
     })
