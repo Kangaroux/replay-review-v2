@@ -30,11 +30,14 @@
     this.on("mount", () => {
       // Create the videojs player
       this.player = videojs("player", {
-        "fluid": true,
-        "techOrder": ["youtube"], 
-        "sources": [{ 
-          "type": "video/youtube", 
-          "src": "https://www.youtube.com/watch?v=" + this.opts.videoId
+        fluid: true, // width 100%
+        controlBar: {
+          remainingTimeDisplay: false
+        },
+        techOrder: ["youtube"], 
+        sources: [{ 
+          type: "video/youtube", 
+          src: "https://www.youtube.com/watch?v=" + this.opts.videoId
         }] 
       }, () => {
         console.log(this.player);
