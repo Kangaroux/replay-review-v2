@@ -6,12 +6,6 @@
     %h2 Create Your Account
 
     %form.form(method="POST")
-      - csrf_token
-
-      - for field in signup_form
-        {{field}}
-
-        - if field.errors
-          .field-error {{field.errors|first}}
+      - include "partials/form.html" with form=signup_form
 
       %input.btn.btn-block.btn-white(type="submit" value="Create Account")

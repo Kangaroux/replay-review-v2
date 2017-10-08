@@ -12,19 +12,6 @@
       do not include any music.
 
     %form.form(method="POST")
-      - csrf_token
-
-      - for field in replay_form
-        - if field.help_text
-          %p.help-text {{field.help_text|safe}}
-
-        - if field.label
-          %label
-            {{field}} {{field.label}}
-        - else
-          {{field}}
-
-        - if field.errors
-          .field-error {{field.errors|first}}
+      - include "partials/form.html" with form=replay_form
 
       %input.btn.btn-block.btn-white(type="submit" value="Submit Replay")

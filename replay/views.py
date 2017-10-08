@@ -7,7 +7,7 @@ from .forms import ReplayFormYoutube
 from .models import Replay
 
 @method_decorator(login_required, name="dispatch")
-class NewReplay(View):
+class New(View):
   def get(self, request):
     return render(request, "replay/new.html", {
       "replay_form": ReplayFormYoutube()
@@ -29,3 +29,14 @@ class NewReplay(View):
       owner=request.user)
 
     return redirect(reverse("user:home"))
+
+
+@method_decorator(login_required, name="dispatch")
+class MyReplays(View):
+  def get(self, request):
+    return render(request, "replay/list.html", {
+      "replays": Replay.objects.filter(owner=request.user).order_by("-date_created")
+    })
+
+class Watch(View):
+  pass

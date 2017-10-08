@@ -13,6 +13,7 @@ const CSS_FILES = "assets/css/**/*.scss";
 const VENDOR_JS_FILES = "assets/js/vendor/**/*.js"
 const JS_FILES = ["assets/js/**/*.js", "!" + VENDOR_JS_FILES];
 const RIOT_FILES = "assets/js/riot/**/*.tag";
+const IMG_FILES = "assets/img/**/*";
 
 /* SCSS files
 assets/css
@@ -43,6 +44,14 @@ gulp.task("vendor-js", function() {
     .pipe(gulp.dest("build/js/vendor"));
 });
 
+/* Images
+assets/img
+*/
+gulp.task("img", function() {
+  return gulp.src(IMG_FILES)
+    .pipe(gulp.dest("build/img"));
+});
+
 /* Riot JS files
 assets/js
 ext: .tag
@@ -63,8 +72,9 @@ gulp.task("watch", function() {
   gulp.watch(CSS_FILES, ["css"]);
   gulp.watch("assets/js/**/*.js", ["js", "vendor-js"]);
   gulp.watch(RIOT_FILES, ["riotjs"]);
+  gulp.watch(IMG_FILES, ["img"]);
 
   spawn("hamplify", ["assets/templates", "build/templates", "--watch"]);
 });
 
-gulp.task("default", ["css", "js", "vendor-js", "riotjs", "templates"]);
+gulp.task("default", ["css", "js", "vendor-js", "img", "riotjs", "templates"]);

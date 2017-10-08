@@ -6,16 +6,6 @@
     %h2 Login
 
     %form.form(method="POST")
-      - csrf_token
-
-      - for field in login_form
-        - if field.label
-          %label
-            {{field}} {{field.label}}
-        - else
-          {{field}}
-
-        - if field.errors
-          .field-error {{field.errors|first}}
+      - include "partials/form.html" with form=login_form
 
       %input.btn.btn-block.btn-white(type="submit" value="Login")

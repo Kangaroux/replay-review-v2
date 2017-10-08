@@ -1,0 +1,12 @@
+- extends "layout/base.html"
+- load static
+
+- block body
+  .body-container
+    .thumb-container
+      - for r in replays
+        .thumb
+          %a(href="{% url 'replay:watch' r.id %}" title="{{ r.title }}")
+            .thumb-img
+              %img(src="{% static 'img/thumb_placeholder.png' %}")
+            .thumb-title {{ r.title }}

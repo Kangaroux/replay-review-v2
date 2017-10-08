@@ -8,6 +8,8 @@
       %a(href="{% url 'replay:new' %}") New Replay
 
     - if request.user.is_authenticated
+      .nav-link 
+        %a(href="{% url 'replay:me' %}") My Replays
       .nav-link
         %a(href="{% url 'user:logout' %}") Logout
     - else
