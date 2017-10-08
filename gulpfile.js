@@ -9,18 +9,19 @@ const concat = require("gulp-concat");
 // For template compilation
 const {spawn, execFileSync} = require("child_process");
 
-const CSS_FILES = "./assets/css/**/*.scss";
-const JS_FILES = "./assets/js/**/*.js";
-const RIOT_FILES = "./assets/js/riot/**/*.tag";
+const CSS_FILES = "assets/css/**/*.scss";
+const VENDOR_JS_FILES = "assets/js/vendor/**/*.js"
+const JS_FILES = ["assets/js/**/*.js", "!" + VENDOR_JS_FILES];
+const RIOT_FILES = "assets/js/riot/**/*.tag";
 
 /* SCSS files
 assets/css
 ext: .scss
 */
 gulp.task("css", function() {
-  return gulp.src("./assets/css/style.scss")
+  return gulp.src("assets/css/style.scss")
     .pipe(sass().on("error", sass.logError))
-    .pipe(gulp.dest("./build/css"));
+    .pipe(gulp.dest("build/css"));
 });
 
 /* JS files
@@ -30,7 +31,16 @@ ext: .js
 gulp.task("js", function() {
   return gulp.src(JS_FILES)
     .pipe(babel({ presets: ["env"] }))
-    .pipe(gulp.dest("./build/js"));
+    .pipe(gulp.dest("build/js"));
+});
+
+/* Vendor JS files (these are only copied, not run through babel)
+assets/js
+ext: .js
+*/
+gulp.task("vendor-js", function() {
+  return gulp.src(VENDOR_JS_FILES)
+    .pipe(gulp.dest("build/js/vendor"));
 });
 
 /* Riot JS files
@@ -42,7 +52,7 @@ gulp.task("riotjs", function() {
     .pipe(riot())
     .pipe(concat("tags.js"))
     .pipe(babel({ presets: ["es2015-riot"] }))
-    .pipe(gulp.dest("./build/js"));
+    .pipe(gulp.dest("build/js"));
 });
 
 gulp.task("templates", function() {
@@ -51,10 +61,10 @@ gulp.task("templates", function() {
 
 gulp.task("watch", function() {
   gulp.watch(CSS_FILES, ["css"]);
-  gulp.watch(JS_FILES, ["js"]);
+  gulp.watch("assets/js/**/*.js", ["js", "vendor-js"]);
   gulp.watch(RIOT_FILES, ["riotjs"]);
 
   spawn("hamplify", ["assets/templates", "build/templates", "--watch"]);
 });
 
-gulp.task("default", ["css", "js", "riotjs", "templates"]);
+gulp.task("default", ["css", "js", "vendor-js", "riotjs", "templates"]);

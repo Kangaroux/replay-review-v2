@@ -3,14 +3,17 @@
 
 - block head
   %link(href="{% static 'css/style.css' %}" rel="stylesheet")
+  %link(href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet")
+  %link(rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css")
 
 - block body
-  <example-tag></example-tag>
-  <another-example-tag></another-example-tag>
+  <replay-video video-id="0bfTAzmlbzA"></replay-video>
 
 - block js
-  %script(src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js")
+  %script(src="https://cdn.jsdelivr.net/npm/riot@3.7/riot.min.js")
   %script(src="{% static 'js/tags.js' %}")
+  %script(src="//vjs.zencdn.net/5.19/video.min.js")
+  %script(src="{% static 'js/vendor/youtube.min.js' %}")
 
   :js
     riot.mount("*");
