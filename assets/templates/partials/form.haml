@@ -2,13 +2,13 @@
 
 - for field in form
   - if field.help_text
-    %p.help-text {{field.help_text|safe}}
+    %p.help-text {{ field.help_text | safe }}
 
   - if field.label
     %label
-      {{field}} {{field.label}}
+      {{ field }} {{ field.label }}
   - else
-    {{field}}
+    {{ field }}
 
   - if field.errors
-    .field-error {{field.errors|first}}
+    .field-error {{ field.errors | first }}
