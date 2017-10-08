@@ -5,7 +5,7 @@
 
   .nav-links
     .nav-link 
-      %a(href="#") New Replay
+      %a(href="{% url 'replay:new' %}") New Replay
 
     - if request.user.is_authenticated
       .nav-link

@@ -6,8 +6,8 @@ SECRET_KEY = "+i)+bq4tlaw-5^n9w0+2bi4c$b9npqw&1o+9#@x6f#a#!x#dby"
 DEBUG = True
 ALLOWED_HOSTS = []
 
-AUTH_USER_MODEL = 'user.User'
-
+AUTH_USER_MODEL = "user.User"
+LOGIN_URL = "user:login"
 
 # Application definition
 
