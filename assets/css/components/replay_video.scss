@@ -1,5 +1,148 @@
-// Hide some youtube stuff
-.ytp-watermark,
-.ytp-paid-content-overlay {
-  display: none !important;
+.replay-container {
+  position: relative;
+
+  .video-js {
+    width: 100%;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
+
+.notes-container {
+  display: flex;
+  flex-direction: column;
+
+  overflow-y: hidden;
+
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 25%;
+  min-width: 175px;
+  z-index: 2;
+
+  transition: background-color 0.5s, bottom 0.5s;
+
+  background-color: rgba(0, 0, 0, 0.15);
+
+  &:hover, &.pinned {
+    background-color: rgba(0, 0, 0, 0.4);
+
+    .notes p:not(.active) {
+      opacity: 0.4;
+    }
+  }
+
+  &.controls-open {
+    transition: background-color 0.5s, bottom 0s;
+    bottom: 30px;
+  }
+
+  .notes {
+    flex: 1;
+    padding-top: 0px;
+    text-shadow: 0px 0px 3px #000;
+    overflow-y: auto;
+
+    color: white;
+
+    a {
+      color: #FFFF56;
+    }
+
+    .note {
+      margin: 0px;
+      padding: 10px;
+      padding-bottom: 0px;
+      word-wrap: break-word;
+      transition: opacity 0.2s;
+
+      &.active {
+        margin-top: 10px;
+        background-color: rgba(0, 0, 0, 0.2);
+        padding-bottom: 10px;
+      }
+
+      &:not(.active) {
+        opacity: 0.4;
+      }
+
+      &:hover {
+        opacity: 1.0 !important;
+      }
+
+      &:last-of-type {
+        padding-bottom: 10px;
+      }
+    }
+
+    &::-webkit-scrollbar-track {
+      background: 0;
+    }
+
+    &::-webkit-scrollbar {
+      width: 10px;
+      background: 0;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(202, 202, 202, 0.4);
+    }
+  }
+
+  .drawer-handle {
+    height: 20px;
+    background-color: rgba(109, 109, 109, 0.6);
+    cursor: pointer;
+
+    text-align: center;
+    font-size: 22px;
+    color: #C1C1C1;
+
+    box-shadow: 0px -10px 50px rgba(0, 0, 0, 0.6);
+
+    .glyphicon {
+      top: -1px;
+    }
+  }
+
+  .notes-drawer {
+    background-color: rgba(0, 0, 0, 0.5);
+    height: 0px;
+
+    transition: height 0.5s;
+
+    &.drawer-open {
+      height: 120px;
+    }
+
+    p {
+      margin: 5px 0px;
+      padding: 0px 10px;
+      color: white;
+    }
+
+    .error {
+     color: #FF0;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      height: 100%;
+      opacity: 0.9;
+      color: #333;
+      resize: none;
+      padding: 5px;
+      border-bottom: 0px;
+    }
+  }
+
+  .notes-time {
+    color: #FF0;
+  }
 }
