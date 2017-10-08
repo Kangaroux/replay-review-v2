@@ -1,0 +1,7 @@
+- load static
+
+.thumb
+  %a(href="{% url 'replay:watch' replay.id %}" title="{{ replay.title }}")
+    .thumb-img
+      %img(src="{% static 'img/thumb_placeholder.png' %}")
+    .thumb-title {{ replay.title }}

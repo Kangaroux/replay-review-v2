@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render, reverse
+from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
@@ -23,12 +23,12 @@ class New(View):
 
     data = form.cleaned_data
 
-    Replay.objects.create(title=data["title"],
+    replay = Replay.objects.create(title=data["title"],
       description=data["description"],
       url=data["url"],
       owner=request.user)
 
-    return redirect(reverse("user:home"))
+    return redirect(reverse("replay:watch", args=[replay.id]))
 
 
 @method_decorator(login_required, name="dispatch")
@@ -39,4 +39,7 @@ class MyReplays(View):
     })
 
 class Watch(View):
-  pass
+  def get(self, request, replay_id):
+    return render(request, "replay/watch.html", {
+      "replay": get_object_or_404(Replay, pk=replay_id)
+    })

@@ -4,10 +4,13 @@ from django.views import View
 
 from .forms import LoginForm, SignupForm
 from .models import User
+from replay.models import Replay
 
 class Home(View):
   def get(self, request):
-    return render(request, "home.html")
+    return render(request, "home.html", {
+      "replays": Replay.objects.filter().order_by("-date_created")
+    })
 
 
 class Login(View):

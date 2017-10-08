@@ -2,4 +2,8 @@
 - load static
 
 - block body
-  <replay-video video-id="0bfTAzmlbzA"></replay-video>
+  .body-container
+    %h1.section-header Recently Added Replays
+    .thumb-container
+      - for r in replays
+        - include "partials/replay_thumb.html" with replay=r

@@ -1,6 +1,6 @@
 <replay-video>
-  <div class="replay-container">
-    <div class="notes-container { 'controls-open': controlsOpen }">
+  <div class="replay-video-container">
+    <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ showSidebar }>
       <div class="notes" ref="notes">
         <div class="note" each={ notes }>
           <a href="#" onclick={ jumpToTime }>{ time_string }</a>: { text }
@@ -9,7 +9,7 @@
       <div class="drawer-handle" onclick={ toggleDrawer }>
         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
       </div>
-      <div class="notes-drawer { 'drawer-open': drawerOpen }">
+      <div class="notes-drawer">
         <p>Current Time: <span class="notes-time">{ currentTime }</span></p>
         <form>
           <textarea ref="input" rows="4" onkeypress={ submitNote }></textarea>
@@ -23,8 +23,9 @@
     // The youtube player object
     this.player = null;
     this.currentTime = "0:00";
-    this.controlsOpen = false;
-    this.drawerOpen = true;
+    this.controlsVisible = false;
+    this.drawerOpen = false;
+    this.showSidebar = false;
     this.notes = [];
 
     this.on("mount", () => {
@@ -44,6 +45,13 @@
           this.onTimeUpdate(this.player.currentTime());
         });
 
+        this.player.one("play", () => {
+          this.showSidebar = true;
+          this.update({
+            showSidebar: this.showSidebar
+          })
+        });
+
         // Check if the controls are open.
         // TODO: Could optimize a bit, controls are always visible if the video is paused
         setInterval(this.checkControlsOpen, 33);
@@ -61,10 +69,10 @@
       let open = el.classList.contains("vjs-has-started") 
         && (el.classList.contains("vjs-paused") || el.classList.contains("vjs-user-active"));
 
-      if(open != this.controlsOpen) {
-        this.controlsOpen = open;
+      if(open != this.controlsVisible) {
+        this.controlsVisible = open;
         this.update({
-          controlsOpen: open
+          controlsVisible: open
         });
       }
     }
