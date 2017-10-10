@@ -2,7 +2,7 @@
   <div class="replay-video-container">
     <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ showSidebar }>
       <div class="notes" ref="notes">
-        <div class="note" each={ notes }>
+        <div class="note { active: isActive }" each={ notes }>
           <a href="#" onclick={ jumpToTime }>{ time_string }</a>: { text }
         </div>
       </div>
@@ -27,6 +27,10 @@
     this.drawerOpen = false;
     this.showSidebar = false;
     this.notes = [];
+    this.activeNote = null;
+
+    // How many seconds a note will stay active for past its timestamp.
+    const MAX_ACTIVE_TIME = 30;
 
     this.on("mount", () => {
       // Create the videojs player
@@ -59,7 +63,39 @@
     });
 
     onTimeUpdate(time) {
-      this.updateTimeDisplay();
+      this.updateTimeDisplay(time);
+
+      // Update the current highlighted note
+      if(this.notes.length) {
+        let newActiveNote = null;
+
+        for(let i = 0; i < this.notes.length; i++) {
+          // The note is ahead of the video
+          if(this.notes[i].time > time) {
+            break;
+          }
+
+          if(((i == this.notes.length - 1) || this.notes[i + 1].time > time)
+              && (time - this.notes[i].time) < MAX_ACTIVE_TIME) {
+            newActiveNote = this.notes[i];
+          }
+        }
+
+        // Update the new active note if it changed
+        if(newActiveNote !== this.activeNote) { 
+          if(newActiveNote === null) {
+            this.activeNote.isActive = false;
+            this.activeNote = null;
+          } else {
+            this.activeNote = newActiveNote;
+            this.activeNote.isActive = true;
+          }
+
+          this.update({
+            notes: this.notes
+          });
+        }
+      }
     }
 
     // Checks to see if the controls on the video are visible. When they are,
@@ -97,9 +133,9 @@
     }
 
     // Updates the current time display on the sidebar
-    updateTimeDisplay() {
+    updateTimeDisplay(time) {
       this.update({
-        currentTime: this.formatTime(this.player.currentTime())
+        currentTime: this.formatTime(time)
       });
     }
 
@@ -122,13 +158,15 @@
         }
 
         let time = this.player.currentTime();
-
-        this.addNote({
+        let note = {
+          isActive: true,
           time: time,
           time_string: this.formatTime(time),
           text: text
-        });
+        };
 
+        this.addNote(note);
+        this.activeNote = note;
         this.refs.input.value = "";
 
         e.preventDefault();
