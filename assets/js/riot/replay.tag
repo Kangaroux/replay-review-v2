@@ -12,7 +12,7 @@
       <div class="notes-drawer">
         <p>Current Time: <span class="notes-time">{ currentTime }</span></p>
         <form>
-          <textarea ref="input" rows="4" onkeypress={ submitNote }></textarea>
+          <textarea ref="input" onkeypress={ submitNote }></textarea>
         </form>
       </div>
     </div>

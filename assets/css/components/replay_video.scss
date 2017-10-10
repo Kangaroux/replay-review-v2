@@ -61,7 +61,7 @@
 
   // Make the drawer handle easier to see while the sidebar is in use
   &.controls-visible,
-  &.drawer-open
+  &.drawer-open,
   &:hover {
     .drawer-handle {
       opacity: 0.8;
@@ -133,6 +133,7 @@
     color: #C1C1C1;
 
     .fa {
+      position: relative;
       top: -1px;
       font-size: 24px;
       color: #AAA;
@@ -155,6 +156,10 @@
      color: #FF0;
     }
 
+    form {
+      height: 100%;
+    }
+
     textarea {
       display: block;
       width: 100%;
@@ -163,7 +168,7 @@
       color: #333;
       resize: none;
       padding: 5px;
-      border-bottom: 0px;
+      border: none;
     }
   }
 
