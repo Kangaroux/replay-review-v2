@@ -3,4 +3,9 @@
 
 - block body
   .replay-container
-    <replay-video video-id="{{ replay.url }}"></replay-video>
+    <replay-video video-id="{{ replay.url }}" replay-id="{{ replay.id }}"></replay-video>
+
+- block js
+  :js
+    window.urls.api_new_note = "{% url 'api:notes:new' %}";
+    window.replay_notes = {{ notes|safe }};

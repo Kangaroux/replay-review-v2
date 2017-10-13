@@ -4,7 +4,7 @@ from django import forms
 from django.forms import ValidationError
 
 from . import validators
-from .models import Replay
+from .models import Replay, ReplayNote
 
 class ReplayFormBase(forms.ModelForm):
   class Meta:
@@ -46,3 +46,44 @@ class ReplayFormYoutube(ReplayFormBase):
       raise ValidationError("Video ID is incorrect or the video is private.")
 
     return data
+
+
+class NoteForm(forms.ModelForm):
+  class Meta:
+    model = ReplayNote
+    fields = ["replay", "text", "time"]
+
+  def __init__(self, *args, **kwargs):
+    self.user = kwargs.pop("user", None)
+
+    super(NoteForm, self).__init__(*args, **kwargs)
+
+  def clean_text(self):
+    data = self.cleaned_data["text"]
+
+    if len(data) < 4:
+      raise ValidationError("Must be at least 4 characters.")
+
+    return data
+
+  def clean_time(self):
+    data = self.cleaned_data["time"]
+
+    if data < 0:
+      raise ValidationError("Invalid time.")
+
+    return data
+
+  # TODO: Need to query youtube videos to get their duration for validation
+
+  # def clean(self):
+  #   data = super(NoteForm, self).clean()
+
+  #   replay = data.get("replay")
+  #   time = data.get("time")
+
+  #   if time is not None and replay is not None:
+  #     if time < 0 or time > replay.duration:
+  #       raise ValidationError("Invalid time.")
+
+  #   return data

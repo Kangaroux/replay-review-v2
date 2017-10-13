@@ -12,6 +12,10 @@
     %link(rel="stylesheet" href="https://opensource.keycdn.com/fontawesome/4.7.0/font-awesome.min.css")
     %link(href="//vjs.zencdn.net/5.19/video-js.min.css" rel="stylesheet")
 
+    :js
+      window.csrf = "{{csrf_token}}";
+      window.urls = {};
+
     - block head
 
   %body(class="{% block body-class %}{% endblock %}")

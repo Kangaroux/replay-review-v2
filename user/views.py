@@ -26,7 +26,7 @@ class Login(View):
     form = LoginForm(request.POST)
 
     if not form.is_valid():
-      return render(request, "signup.html", {
+      return render(request, "login.html", {
         "login_form": form
       })
 
@@ -36,7 +36,7 @@ class Login(View):
     if not user:
       form.add_error("username", "Username or password is incorrect.")
 
-      return render(request, "signup.html", {
+      return render(request, "login.html", {
         "login_form": form
       })
 

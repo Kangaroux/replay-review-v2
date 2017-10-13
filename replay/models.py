@@ -17,3 +17,14 @@ class Replay(models.Model):
   url = models.CharField(max_length=200)
 
   source = models.CharField(max_length=2, choices=SOURCES, default=SOURCE_YOUTUBE)
+
+
+class ReplayNote(models.Model):
+  date_created = models.DateTimeField(auto_now_add=True)
+  date_updated = models.DateTimeField(auto_now=True)
+
+  replay = models.ForeignKey("Replay")
+  author = models.ForeignKey("user.User")
+
+  text = models.TextField(max_length=500)
+  time = models.FloatField()

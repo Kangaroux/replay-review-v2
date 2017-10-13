@@ -32,6 +32,9 @@
     // How many seconds a note will stay active for past its timestamp.
     const MAX_ACTIVE_TIME = 30;
 
+    // Add any existing notes
+    this.setupNotes();
+
     this.on("mount", () => {
       // Create the videojs player
       this.player = videojs("player", {
@@ -61,6 +64,20 @@
         setInterval(this.checkControlsOpen, 33);
       });
     });
+
+    setupNotes() {
+      let notes = window.replay_notes[this.opts.replayId.toString()];
+
+      if(!notes) {
+        return;
+      }
+
+      for(let k of notes) {
+        this.notes.append(this.createNote({text: k.text, time: k.time}));
+      }
+
+      this.sortNotes();
+    }
 
     onTimeUpdate(time) {
       this.updateTimeDisplay(time);
@@ -151,33 +168,52 @@
     // Submits a replay note when the user presses enter (but not shift enter)
     submitNote(e) {
       if(e.keyCode == 13 && !e.shiftKey) {
-        let text = this.refs.input.value;
+        e.preventDefault();
 
-        if(!text.trim().length) {
+        let text = this.refs.input.value.trim();
+
+        if(!text.length) {
           return;
         }
 
         let time = this.player.currentTime();
-        let note = {
-          isActive: true,
+
+        qwest.post(window.urls.api_new_note, {
+          csrfmiddlewaretoken: window.csrf,
+          replay: this.opts.replayId,
+          text: text,
           time: time,
-          time_string: this.formatTime(time),
-          text: text
-        };
-
-        this.addNote(note);
-        this.activeNote = note;
-        this.refs.input.value = "";
-
-        e.preventDefault();
+        }).then((x, r) => {
+          this.addNoteToScreen(this.createNote({time: r.time, text: r.text, active: true}));
+          this.refs.input.value = "";
+        }).catch((e) => {
+          console.log(e);
+        });
       }
     }
 
-    addNote(note) {
-      this.notes.push(note);
+    createNote(params) {
+      return {
+        isActive: params.active === true,
+        time: params.time,
+        time_string: this.formatTime(params.time),
+        text: params.text
+      };
+    }
 
-      // Sort the notes in ascending order. If I wasn't lazy I'd just insert it at the right
-      // spot but I can't be bothered
+    // Adds the note to the screen and marks it as active
+    addNoteToScreen(note) {
+      this.notes.push(note);
+      this.sortNotes();
+      this.activeNote = note;
+
+      // Force an update
+      this.update({
+        notes: this.notes
+      });
+    }
+
+    sortNotes() {
       this.notes.sort((a, b) => {
         if(a.time > b.time) {
           return 1;

@@ -1,10 +1,12 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
 from .forms import ReplayFormYoutube
-from .models import Replay
+from .models import Replay, ReplayNote
 
 @method_decorator(login_required, name="dispatch")
 class New(View):
@@ -40,6 +42,12 @@ class MyReplays(View):
 
 class Watch(View):
   def get(self, request, replay_id):
+    replay = get_object_or_404(Replay, pk=replay_id)
+    notes = {
+      replay.id: [{"time": x.time, "text": x.text} for x in ReplayNote.objects.filter(replay=replay)]
+    }
+
     return render(request, "replay/watch.html", {
-      "replay": get_object_or_404(Replay, pk=replay_id)
+      "notes": json.dumps(notes),
+      "replay": replay
     })
