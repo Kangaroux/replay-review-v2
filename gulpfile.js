@@ -10,15 +10,17 @@ const autoprefix = require("gulp-autoprefixer");
 // For template compilation
 const {spawn, execFileSync} = require("child_process");
 
-const CSS_FILES = "assets/css/**/*.scss";
+const VENDOR_CSS_FILES = "assets/css/vendor/**/*.@(scss|css)";
+const CSS_FILES = ["assets/css/**/*.@(scss|css)", "!" + VENDOR_CSS_FILES];
 const VENDOR_JS_FILES = "assets/js/vendor/**/*.js"
 const JS_FILES = ["assets/js/**/*.js", "!" + VENDOR_JS_FILES];
 const RIOT_FILES = "assets/js/riot/**/*.tag";
+const FONT_FILES = "assets/fonts/**/*";
 const IMG_FILES = "assets/img/**/*";
 
-/* SCSS files
+/* CSS files
 assets/css
-ext: .scss
+ext: .scss or .css
 */
 gulp.task("css", function() {
   return gulp.src("assets/css/style.scss")
@@ -27,6 +29,21 @@ gulp.task("css", function() {
       browsers: [">= 5%", "last 2 versions"],
       cascade: false
     }))
+    .pipe(gulp.dest("build/css"));
+});
+
+/* Vendor CSS files
+assets/css/vendor
+ext: .scss or .css
+*/
+gulp.task("vendor-css", function() {
+  return gulp.src(VENDOR_CSS_FILES)
+    .pipe(sass().on("error", sass.logError))
+    .pipe(autoprefix({
+      browsers: [">= 5%", "last 2 versions"],
+      cascade: false
+    }))
+    .pipe(concat("vendor.css"))
     .pipe(gulp.dest("build/css"));
 });
 
@@ -48,6 +65,14 @@ gulp.task("vendor-js", function() {
   return gulp.src(VENDOR_JS_FILES)
     .pipe(concat("vendor.js"))
     .pipe(gulp.dest("build/js"));
+});
+
+/* Fonts
+assets/img
+*/
+gulp.task("fonts", function() {
+  return gulp.src(FONT_FILES)
+    .pipe(gulp.dest("build/fonts"));
 });
 
 /* Images
@@ -75,7 +100,7 @@ gulp.task("templates", function() {
 });
 
 gulp.task("watch", function() {
-  gulp.watch(CSS_FILES, ["css"]);
+  gulp.watch("assets/css/**/*.@(scss|css)", ["css", "vendor-css"]);
   gulp.watch("assets/js/**/*.js", ["js", "vendor-js"]);
   gulp.watch(RIOT_FILES, ["riotjs"]);
   gulp.watch(IMG_FILES, ["img"]);
@@ -83,4 +108,4 @@ gulp.task("watch", function() {
   spawn("hamplify", ["assets/templates", "build/templates", "--watch"]);
 });
 
-gulp.task("default", ["css", "js", "vendor-js", "img", "riotjs", "templates"]);
+gulp.task("default", ["css", "vendor-css", "js", "vendor-js", "fonts", "img", "riotjs", "templates"]);

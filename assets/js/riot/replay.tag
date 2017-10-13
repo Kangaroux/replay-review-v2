@@ -1,6 +1,6 @@
 <replay-video>
   <div class="replay-video-container">
-    <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ showSidebar }>
+    <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ videoStarted }>
       <div class="notes" ref="notes">
         <div class="note { active: isActive }" each={ notes }>
           <a href="#" onclick={ jumpToTime }>{ time_string }</a>: { text }
@@ -10,10 +10,8 @@
         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
       </div>
       <div class="notes-drawer">
-        <p>Current Time: <span class="notes-time">{ currentTime }</span></p>
-        <form>
-          <textarea ref="input" onkeypress={ submitNote }></textarea>
-        </form>
+        <p>Current Time: <span class="notes-time">{ currentTimeDisplay }</span></p>
+        <textarea ref="input" onkeypress={ submitNote }></textarea>
       </div>
     </div>
     <video id="player" class="video-js vjs-default-skin" controls></video>
@@ -22,18 +20,15 @@
   <script>
     // The youtube player object
     this.player = null;
-    this.currentTime = "0:00";
+    this.currentTimeDisplay = "0:00";
     this.controlsVisible = false;
     this.drawerOpen = false;
-    this.showSidebar = false;
+    this.videoStarted = false;
     this.notes = [];
     this.activeNote = null;
 
     // How many seconds a note will stay active for past its timestamp.
     const MAX_ACTIVE_TIME = 30;
-
-    // Add any existing notes
-    this.setupNotes();
 
     this.on("mount", () => {
       // Create the videojs player
@@ -45,7 +40,7 @@
           src: "https://www.youtube.com/watch?v=" + this.opts.videoId + "?rel=0"
         }] 
       }, () => {
-        console.log(this.player);
+        this.setupNotes();
         
         // This gets called periodically as the video plays
         this.player.on("timeupdate", () => {
@@ -53,9 +48,8 @@
         });
 
         this.player.one("play", () => {
-          this.showSidebar = true;
           this.update({
-            showSidebar: this.showSidebar
+            videoStarted: true
           })
         });
 
@@ -65,6 +59,10 @@
       });
     });
 
+    this.on("update", (e) => {
+      console.log(e);
+    });
+
     setupNotes() {
       let notes = window.replay_notes[this.opts.replayId.toString()];
 
@@ -72,11 +70,9 @@
         return;
       }
 
-      for(let k of notes) {
-        this.notes.append(this.createNote({text: k.text, time: k.time}));
-      }
-
+      this.notes = notes.map(x => this.createNote({text: x.text, time: x.time}));
       this.sortNotes();
+      this.update();
     }
 
     onTimeUpdate(time) {
@@ -100,16 +96,19 @@
 
         // Update the new active note if it changed
         if(newActiveNote !== this.activeNote) { 
-          if(newActiveNote === null) {
+
+          // Set the old note as inactive
+          if(this.activeNote !== null) {
             this.activeNote.isActive = false;
-            this.activeNote = null;
-          } else {
-            this.activeNote = newActiveNote;
-            this.activeNote.isActive = true;
+          }
+
+          // Set the new note to active
+          if(newActiveNote !== null) {
+            newActiveNote.isActive = true;
           }
 
           this.update({
-            notes: this.notes
+            activeNote: newActiveNote
           });
         }
       }
@@ -123,7 +122,6 @@
         && (el.classList.contains("vjs-paused") || el.classList.contains("vjs-user-active"));
 
       if(open != this.controlsVisible) {
-        this.controlsVisible = open;
         this.update({
           controlsVisible: open
         });
@@ -151,17 +149,24 @@
 
     // Updates the current time display on the sidebar
     updateTimeDisplay(time) {
-      this.update({
-        currentTime: this.formatTime(time)
-      });
+      let formatted = this.formatTime(time);
+
+      // Update the time display if it's different
+      if(formatted != this.currentTimeDisplay) {
+        this.currentTimeDisplay = formatted;
+
+        // The time display is only visible when the drawer is open, no need 
+        // to update the tag
+        if(this.drawerOpen) {
+          this.update();
+        }
+      }
     }
 
     // Toggles the notes drawer open when the user clicks on the drawer handle
     toggleDrawer() {
-      this.drawerOpen = !this.drawerOpen;
-
       this.update({
-        drawerOpen: this.drawerOpen
+        drawerOpen: !this.drawerOpen
       })
     }
 
@@ -207,10 +212,7 @@
       this.sortNotes();
       this.activeNote = note;
 
-      // Force an update
-      this.update({
-        notes: this.notes
-      });
+      //this.update();
     }
 
     sortNotes() {
@@ -228,6 +230,5 @@
     jumpToTime(e) {
       this.player.currentTime(e.item.time);
     }
-
   </script>
 </replay-video>
