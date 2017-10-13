@@ -177,6 +177,14 @@
   }
 }
 
-.video-js .vjs-current-time {
-  display: block !important;
+.video-js {
+  // Show the current time
+  .vjs-current-time {
+    display: block !important;
+  }
+
+  // Fix the mouseover timestamps from being covered by the sidebar
+  .vjs-progress-control .vjs-progress-holder {
+    z-index: 2;
+  }
 }

@@ -20,10 +20,8 @@
       
     - block body
 
-    %script(src="https://cdn.jsdelivr.net/npm/riot@3.7/riot.min.js")
+    %script(src="{% static 'js/vendor.js' %}")
     %script(src="{% static 'js/tags.js' %}")
-    %script(src="//vjs.zencdn.net/5.19/video.min.js")
-    %script(src="{% static 'js/vendor/youtube.min.js' %}")
 
     - block js
 

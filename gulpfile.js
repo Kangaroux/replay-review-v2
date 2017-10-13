@@ -46,7 +46,8 @@ ext: .js
 */
 gulp.task("vendor-js", function() {
   return gulp.src(VENDOR_JS_FILES)
-    .pipe(gulp.dest("build/js/vendor"));
+    .pipe(concat("vendor.js"))
+    .pipe(gulp.dest("build/js"));
 });
 
 /* Images

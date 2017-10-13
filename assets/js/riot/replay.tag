@@ -39,7 +39,7 @@
         techOrder: ["youtube"], 
         sources: [{ 
           type: "video/youtube", 
-          src: "https://www.youtube.com/watch?v=" + this.opts.videoId
+          src: "https://www.youtube.com/watch?v=" + this.opts.videoId + "?rel=0"
         }] 
       }, () => {
         console.log(this.player);
