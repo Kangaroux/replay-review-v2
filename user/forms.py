@@ -10,23 +10,27 @@ class SignupForm(forms.ModelForm):
 
   email = forms.EmailField(widget=forms.EmailInput(attrs={
       "placeholder": "Email Address"
-    }))
+    }),
+  label="")
 
   username = forms.CharField(min_length=validators.MIN_USERNAME_LENGTH, max_length=validators.MAX_USERNAME_LENGTH, 
     widget=forms.TextInput(attrs={
       "placeholder": "Username"
     }),
-    validators=validators.username)
+    validators=validators.username,
+  label="")
 
   password = forms.CharField(min_length=6, max_length=100, 
     widget=forms.PasswordInput(attrs={
       "placeholder": "Password"
-    }))
+    }),
+  label="")
 
   password_confirm = forms.CharField(min_length=6, max_length=100, 
     widget=forms.PasswordInput(attrs={
       "placeholder": "Confirm Password"
-    }))
+    }),
+  label="")
 
   def clean(self):
     data = super(SignupForm, self).clean()
