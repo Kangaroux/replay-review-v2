@@ -3,7 +3,11 @@
     <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ videoStarted }>
       <div class="notes" ref="notes">
         <div class="note { active: isActive }" each={ notes }>
-          <a href="#" onclick={ jumpToTime }>{ time_string }</a>: { text }
+          <a class="note-trashcan" title="Delete note" onclick={ deleteNote } if={ user === window.userid }>
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+          </a>
+
+          <a class="note-timestamp" onclick={ jumpToTime }>{ time_string }</a>: { text }
         </div>
       </div>
       <div class="drawer-handle" onclick={ toggleDrawer }>
@@ -44,7 +48,7 @@
         
         // This gets called periodically as the video plays
         this.player.on("timeupdate", () => {
-          this.onTimeUpdate(this.player.currentTime());
+          this.onTimeUpdate();
         });
 
         this.player.one("play", () => {
@@ -70,48 +74,54 @@
         return;
       }
 
-      this.notes = notes.map(x => this.createNote({text: x.text, time: x.time}));
+      this.notes = notes.map(x => this.createNote({id: x.id, user: x.user, text: x.text, time: x.time}));
       this.sortNotes();
       this.update();
     }
 
-    onTimeUpdate(time) {
-      this.updateTimeDisplay(time);
+    onTimeUpdate() {
+      this.updateTimeDisplay(this.player.currentTime());
+      this.updateActiveNote();
+    }
 
-      // Update the current highlighted note
-      if(this.notes.length) {
-        let newActiveNote = null;
+    updateActiveNote() {
+      if(!this.notes.length) {
+        return;
+      }
 
-        for(let i = 0; i < this.notes.length; i++) {
-          // The note is ahead of the video
-          if(this.notes[i].time > time) {
-            break;
-          }
+      let newActiveNote = null;
+      let time = this.player.currentTime();
 
-          if(((i == this.notes.length - 1) || this.notes[i + 1].time > time)
-              && (time - this.notes[i].time) < MAX_ACTIVE_TIME) {
-            newActiveNote = this.notes[i];
-          }
+      for(let i = 0; i < this.notes.length; i++) {
+        // The note is ahead of the video
+        if(this.notes[i].time > time) {
+          break;
         }
 
-        // Update the new active note if it changed
-        if(newActiveNote !== this.activeNote) { 
-
-          // Set the old note as inactive
-          if(this.activeNote !== null) {
-            this.activeNote.isActive = false;
-          }
-
-          // Set the new note to active
-          if(newActiveNote !== null) {
-            newActiveNote.isActive = true;
-          }
-
-          this.update({
-            activeNote: newActiveNote
-          });
+        if(((i == this.notes.length - 1) || this.notes[i + 1].time > time)
+            && (time - this.notes[i].time) < MAX_ACTIVE_TIME) {
+          newActiveNote = this.notes[i];
         }
       }
+
+      // Nothing changed
+      if(newActiveNote === this.activeNote) {
+        return;
+      }
+
+      // Set the old note as inactive
+      if(this.activeNote !== null) {
+        this.activeNote.isActive = false;
+      }
+
+      // Set the new note to active
+      if(newActiveNote !== null) {
+        newActiveNote.isActive = true;
+      }
+
+      this.update({
+        activeNote: newActiveNote
+      });
     }
 
     // Checks to see if the controls on the video are visible. When they are,
@@ -189,17 +199,19 @@
           text: text,
           time: time,
         }).then((x, r) => {
-          this.addNoteToScreen(this.createNote({time: r.time, text: r.text, active: true}));
+          this.addNoteToScreen(this.createNote({id: r.id, user: window.userid, time: r.time, text: r.text, active: true}));
           this.refs.input.value = "";
         }).catch((e) => {
-          console.log(e);
+          console.error(e);
         });
       }
     }
 
     createNote(params) {
       return {
+        id: params.id,
         isActive: params.active === true,
+        user: params.user,
         time: params.time,
         time_string: this.formatTime(params.time),
         text: params.text
@@ -210,9 +222,7 @@
     addNoteToScreen(note) {
       this.notes.push(note);
       this.sortNotes();
-      this.activeNote = note;
-
-      //this.update();
+      this.updateActiveNote();
     }
 
     sortNotes() {
@@ -230,6 +240,31 @@
     jumpToTime(e) {
       this.player.currentTime(e.item.time);
       this.player.play();
+    }
+
+    deleteNote(e) {
+      this.player.pause();
+
+      let text = e.item.text;
+
+      if(text.length > 50) {
+        text = text.slice(0, 50) + "...";
+      }
+
+      if(confirm(`You are about to delete this note:\n\n` +
+          `${e.item.time_string}: ${text}\n\nAre you sure?`)) {
+        qwest.post(window.urls.api_delete_note, {
+          csrfmiddlewaretoken: window.csrf,
+          replay_id: this.opts.replayId,
+          note_id: e.item.id
+        }).then((x, r) => {
+          this.notes.splice(this.notes.indexOf(e.item), 1);
+          this.updateActiveNote();
+          this.update();
+        }).catch((e) => {
+          console.error(e);
+        });
+      }
     }
   </script>
 </replay-video>

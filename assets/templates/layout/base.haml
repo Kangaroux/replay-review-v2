@@ -13,6 +13,7 @@
     :js
       window.csrf = "{{csrf_token}}";
       window.urls = {};
+      window.userid = {{ request.user.id | default:"null" }};
 
     - block head
 

@@ -5,7 +5,6 @@
 .replay-video-container {
   position: relative;
   max-width: 1400px;
-  padding: 0px 20px;
   margin: 0px auto;
 
   .video-js {
@@ -68,6 +67,28 @@
     }
   }
 
+  .note-timestamp {
+    color: #FFFF56;
+  }
+
+  .note-trashcan {
+    float: right;
+    color: #D55;
+
+    padding: 4px 8px;
+    position: relative;
+    top: -4px;
+    right: -8px;
+
+    &:hover {
+      color: #F88;
+    }
+
+    .fa {
+      box-shadow: 0px 0px 10px #000;
+    }
+  }
+
   .notes {
     flex: 1;
     padding-top: 0px;
@@ -77,7 +98,7 @@
     color: white;
 
     a {
-      color: #FFFF56;
+      cursor: pointer;
     }
 
     .note {

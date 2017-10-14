@@ -44,7 +44,13 @@ class Watch(View):
   def get(self, request, replay_id):
     replay = get_object_or_404(Replay, pk=replay_id)
     notes = {
-      replay.id: [{"time": x.time, "text": x.text} for x in ReplayNote.objects.filter(replay=replay)]
+      replay.id: [{
+          "id": x.id,
+          "user": x.author.id,
+          "time": x.time, 
+          "text": x.text
+        } for x in ReplayNote.objects.filter(replay=replay)
+      ]
     }
 
     return render(request, "replay/watch.html", {

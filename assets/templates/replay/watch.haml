@@ -8,4 +8,5 @@
 - block js
   :js
     window.urls.api_new_note = "{% url 'api:notes:new' %}";
+    window.urls.api_delete_note = "{% url 'api:notes:delete' %}";
     window.replay_notes = {{ notes|safe }};

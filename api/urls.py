@@ -6,6 +6,7 @@ urlpatterns = [
   url(r'^v1/', include([
     url(r'^notes/', include([
       url(r'^new$', views.NewNote.as_view(), name="new"),
+      url(r'^delete$', views.DeleteNote.as_view(), name="delete"),
     ], "notes"))
   ]))
 ]
