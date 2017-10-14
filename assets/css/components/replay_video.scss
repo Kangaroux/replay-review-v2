@@ -16,6 +16,27 @@
   }
 }
 
+.replay-info-container {
+  background-color: #F5F5F5;
+  max-width: 1400px;
+  margin: 0px auto;
+
+  padding: 20px;
+}
+
+.replay-title {
+  font-size: 24px;
+}
+
+.replay-uploader {
+  color: #555;
+
+  margin-top: 20px;
+  margin-bottom: 0px;
+
+  font-size: 12px;
+}
+
 .notes-container {
   display: flex;
   flex-direction: column;

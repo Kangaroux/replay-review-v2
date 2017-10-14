@@ -5,6 +5,13 @@
   .replay-container
     <replay-video video-id="{{ replay.url }}" replay-id="{{ replay.id }}"></replay-video>
 
+  .replay-info-container
+    .replay-title {{ replay.title }}
+    {{ replay.get_description | linebreaks }}
+    %p.replay-uploader 
+      Posted by {{ replay.owner.username }} on 
+      %span(title="{{ replay.date_created | date:'r' }}") {{ replay.date_created | date:"F jS, Y" }}
+
 - block js
   :js
     window.urls.api_new_note = "{% url 'api:notes:new' %}";

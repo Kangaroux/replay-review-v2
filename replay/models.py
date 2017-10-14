@@ -18,6 +18,12 @@ class Replay(models.Model):
 
   source = models.CharField(max_length=2, choices=SOURCES, default=SOURCE_YOUTUBE)
 
+  def get_description(self):
+    if not self.description:
+      return "No description."
+
+    return self.description
+
 
 class ReplayNote(models.Model):
   date_created = models.DateTimeField(auto_now_add=True)
