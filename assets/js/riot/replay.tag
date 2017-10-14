@@ -229,6 +229,7 @@
 
     jumpToTime(e) {
       this.player.currentTime(e.item.time);
+      this.player.play();
     }
   </script>
 </replay-video>
