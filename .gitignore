@@ -7,6 +7,7 @@ yarn.lock
 
 __pycache__/
 build/
+dist/
 migrations/
 node_modules/
 venv/
