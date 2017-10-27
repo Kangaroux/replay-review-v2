@@ -14,6 +14,10 @@
       outline: none;
     }
   }
+
+  a {
+    color: #FFFF56;
+  }
 }
 
 .replay-info-container {
@@ -86,10 +90,6 @@
     .drawer-handle {
       opacity: 0.8;
     }
-  }
-
-  .note-timestamp {
-    color: #FFFF56;
   }
 
   .note-trashcan {
@@ -210,8 +210,21 @@
     }
   }
 
-  .notes-time {
-    color: #FF0;
+  .drawer-header {
+    padding: 5px;
+  }
+
+  .current-time {
+    color: #FFF;
+    float: left;
+
+    span {
+      color: #FF0;
+    }
+  }
+
+  .seek-controls {
+    float: right;
   }
 }
 

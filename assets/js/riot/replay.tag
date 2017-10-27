@@ -10,7 +10,16 @@
         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
       </div>
       <div class="notes-drawer">
-        <p>Current Time: <span class="notes-time">{ currentTimeDisplay }</span></p>
+        <div class="clearfix drawer-header">
+          <div class="seek-controls">
+            <a href="#" onclick={ () => seek(-1) } title="Go back 1 second">&lt;&lt;</a>
+            <a href="#" onclick={ () => seek(1) } title="Go forward 1 second">&gt;&gt;</a>
+          </div>
+
+          <div class="current-time">
+            Current Time: <span>{ currentTimeDisplay }</span>
+          </div>
+        </div>
         <textarea ref="input" onkeypress={ submitNote }></textarea>
       </div>
     </div>
@@ -40,6 +49,8 @@
           src: "https://www.youtube.com/watch?v=" + opts.videoId + "?rel=0"
         }] 
       }, () => {
+        console.log(this.player);
+
         this.setupNotes();
         
         // This gets called periodically as the video plays
@@ -262,6 +273,21 @@
           console.error(e);
         });
       }
+    }
+
+    // Seeks the video forward/backward by a time delta
+    seek(delta) {
+      let time = this.player.currentTime();
+      let duration = this.player.duration();
+      this.player.pause();
+
+      // We're at the edge of the video and we can't seek any further
+      if(time === 0 && delta < 0 || time === duration && delta > 0) {
+        return;
+      }
+
+      time = Math.min(Math.max(time + delta, 0), duration);
+      this.player.currentTime(time);
     }
   </script>
 </replay-video>
