@@ -2,13 +2,9 @@
   <div class="replay-video-container">
     <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ videoStarted }>
       <div class="notes" ref="notes">
-        <div class="note { active: isActive }" each={ notes }>
-          <a class="note-trashcan" title="Delete note" onclick={ deleteNote } if={ user === window.userid }>
-            <i class="fa fa-trash-o" aria-hidden="true"></i>
-          </a>
-
-          <a class="note-timestamp" onclick={ jumpToTime }>{ time_string }</a>: { text }
-        </div>
+        <virtual each={ notes }>
+          <replay-note data={ this } skip={ jumpToTime } delete-note={ deleteNote } />
+        </virtual>
       </div>
       <div class="drawer-handle" onclick={ toggleDrawer }>
         <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
@@ -41,7 +37,7 @@
         techOrder: ["youtube"], 
         sources: [{ 
           type: "video/youtube", 
-          src: "https://www.youtube.com/watch?v=" + this.opts.videoId + "?rel=0"
+          src: "https://www.youtube.com/watch?v=" + opts.videoId + "?rel=0"
         }] 
       }, () => {
         this.setupNotes();
@@ -63,12 +59,9 @@
       });
     });
 
-    this.on("update", (e) => {
-      console.log(e);
-    });
-
+    // Adds all of the existing notes to the screen
     setupNotes() {
-      let notes = window.replay_notes[this.opts.replayId.toString()];
+      let notes = window.replay_notes[opts.replayId.toString()];
 
       if(!notes) {
         return;
@@ -79,11 +72,13 @@
       this.update();
     }
 
+    // Called every time the video fires a timeupdate event
     onTimeUpdate() {
       this.updateTimeDisplay(this.player.currentTime());
       this.updateActiveNote();
     }
 
+    // Updates the current active note 
     updateActiveNote() {
       if(!this.notes.length) {
         return;
@@ -195,7 +190,7 @@
 
         qwest.post(window.urls.api_new_note, {
           csrfmiddlewaretoken: window.csrf,
-          replay: this.opts.replayId,
+          replay: opts.replayId,
           text: text,
           time: time,
         }).then((x, r) => {
@@ -237,28 +232,30 @@
       });
     }
 
-    jumpToTime(e) {
-      this.player.currentTime(e.item.time);
+    // Skips to a specific time in the video
+    jumpToTime(time) {
+      this.player.currentTime(time);
       this.player.play();
     }
 
-    deleteNote(e) {
+    // Deletes a note after prompting the user
+    deleteNote(note) {
       this.player.pause();
 
-      let text = e.item.text;
+      let text = note.text;
 
       if(text.length > 50) {
         text = text.slice(0, 50) + "...";
       }
 
       if(confirm(`You are about to delete this note:\n\n` +
-          `${e.item.time_string}: ${text}\n\nAre you sure?`)) {
+          `${note.time_string}: ${text}\n\nAre you sure?`)) {
         qwest.post(window.urls.api_delete_note, {
           csrfmiddlewaretoken: window.csrf,
-          replay_id: this.opts.replayId,
-          note_id: e.item.id
+          replay_id: opts.replayId,
+          note_id: note.id
         }).then((x, r) => {
-          this.notes.splice(this.notes.indexOf(e.item), 1);
+          this.notes.splice(this.notes.findIndex((x) => x.id == note.id), 1);
           this.updateActiveNote();
           this.update();
         }).catch((e) => {
