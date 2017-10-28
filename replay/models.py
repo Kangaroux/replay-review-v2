@@ -24,6 +24,10 @@ class Replay(models.Model):
 
     return self.description
 
+  def get_thumbnail(self):
+    if self.source == self.SOURCE_YOUTUBE:
+      return "https://img.youtube.com/vi/%s/mqdefault.jpg" % self.url
+
 
 class ReplayNote(models.Model):
   date_created = models.DateTimeField(auto_now_add=True)

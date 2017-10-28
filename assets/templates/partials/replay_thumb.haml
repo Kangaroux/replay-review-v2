@@ -3,5 +3,5 @@
 .thumb
   %a(href="{% url 'replay:watch' replay.id %}" title="{{ replay.title }}")
     .thumb-img
-      %img(src="{% static 'img/thumb_placeholder.png' %}")
+      %img(src="{{ replay.get_thumbnail }}")
     .thumb-title {{ replay.title }}
