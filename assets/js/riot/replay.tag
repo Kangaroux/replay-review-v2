@@ -27,17 +27,16 @@
   </div>
 
   <script>
-    // The youtube player object
-    this.player = null;
-    this.currentTimeDisplay = "0:00";
-    this.controlsVisible = false;
-    this.drawerOpen = false;
-    this.videoStarted = false;
-    this.notes = [];
     this.activeNote = null;
+    this.controlsVisible = false;
+    this.currentTimeDisplay = "0:00";
+    this.drawerOpen = false;
+    this.notes = [];
+    this.player = null;
+    this.videoStarted = false;
 
     // How many seconds a note will stay active for past its timestamp.
-    const MAX_ACTIVE_TIME = 30;
+    const MAX_ACTIVE_TIME = 7;
 
     this.on("mount", () => {
       // Create the videojs player
@@ -49,9 +48,27 @@
           src: "https://www.youtube.com/watch?v=" + opts.videoId + "?rel=0"
         }] 
       }, () => {
-        console.log(this.player);
+        // Set volume and mute settings to previous setting (if there was one)
+        this.player.muted(Cookies.get("player-muted") === "true" || false);
+        this.player.volume(Cookies.get("player-volume") || 1);
 
         this.setupNotes();
+
+        // Remember the user's mute and volume settings in the cookies
+        this.player.on("volumechange", () => {
+          let m = Cookies.get("player-muted");
+          let v = Cookies.get("player-volume");
+
+          // Mute was changed
+          if(typeof m === "undefined" || this.player.muted().toString() !== m) {
+            Cookies.set("player-muted", this.player.muted());
+          }
+
+          // Volume was changed
+          if(typeof v === "undefined" || this.player.volume().toString() !== v) {
+            Cookies.set("player-volume", this.player.volume());
+          }
+        });
         
         // This gets called periodically as the video plays
         this.player.on("timeupdate", () => {
