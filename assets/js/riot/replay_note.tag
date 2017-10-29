@@ -15,6 +15,10 @@
     this.time_string = opts.data.time_string;
     this.text = opts.data.text;
 
+    this.on("update", () => {
+      this.isActive = opts.data.isActive;
+    });
+
     deleteNote() {
       opts.deleteNote(this);
     }

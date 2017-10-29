@@ -2,8 +2,8 @@
   <div class="replay-video-container">
     <div class="notes-container { 'controls-visible': controlsVisible, 'drawer-open': drawerOpen }" if={ videoStarted }>
       <div class="notes" ref="notes">
-        <virtual each={ notes }>
-          <replay-note data={ this } skip={ jumpToTime } delete-note={ deleteNote } />
+        <virtual each={ note in notes }>
+          <replay-note data={ note } skip={ jumpToTime } delete-note={ deleteNote } />
         </virtual>
       </div>
       <div class="drawer-handle" onclick={ toggleDrawer }>
